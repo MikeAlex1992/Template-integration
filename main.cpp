@@ -1,14 +1,13 @@
 #include "integration.h"
 #include <iostream>
 
-constexpr double f(Point p)
+constexpr double f_examp(Point p)
 {
     return p.x*p.x + p.y*p.y + p.z*p.z;
 }
 
 int main()
 {
-    static_assert(integration::volumeIntegrate(f) == 8, "OK");
-    std::cout << integration::volumeIntegrate(f) << std::endl;
+    static_assert(integration::volumeIntegrate(f_examp) == 8, "NOT OK");
     return 0;
 }
