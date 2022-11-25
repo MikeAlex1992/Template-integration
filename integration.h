@@ -17,7 +17,7 @@ namespace integration
         }
 
     template <typename F>
-        double volumeIntegrate(F&& f) {
+        constexpr double volumeIntegrate(F&& f) {
             auto vol = 0.0;
             constexpr_for<0, GLOBAL::NDEG3D, 1>([=, &vol](auto i) {
                     vol += weight(i)*f(node(i));
