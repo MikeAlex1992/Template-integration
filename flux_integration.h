@@ -69,8 +69,8 @@ namespace flux_integration {
 
                         if constexpr(flux == FluxType::volume)  { one_dof_result = VolFlux<k>();  }
                         if constexpr(flux == FluxType::surface) { one_dof_result = SurfFlux<k>(); }
-                        if constexpr(flux == FluxType::rhs)     { one_dof_result = SurfFlux<k>(); }
-                        if constexpr(flux == FluxType::relax)   { one_dof_result = SurfFlux<k>(); }
+                        if constexpr(flux == FluxType::rhs)     { one_dof_result = RHSFlux<k>(); }
+                        if constexpr(flux == FluxType::relax)   { one_dof_result = RelFlux<k>(); }
 
                         for (int i = 0; i < one_dof_result.size(); ++i) { result[i*GLOBAL::NDOFS3D + k] = one_dof_result[i]; }
                         });
@@ -99,6 +99,20 @@ namespace flux_integration {
                         result += SurfSideFlux<side, k>();
                     });
                     return result;
+                }
+
+            template <size_t k>
+                auto RelFlux() const {
+                    return VOL_INTEGR( return   fl.Flux_X(u._at(p))*DLDX(k, p) +
+                                                fl.Flux_Y(u._at(p))*DLDY(k, p) +
+                                                fl.Flux_Z(u._at(p))*DLDZ(k, p); );
+                }
+
+            template <size_t k>
+                auto RHSFlux() const {
+                    return VOL_INTEGR( return   fl.Flux_X(u._at(p))*DLDX(k, p) +
+                                                fl.Flux_Y(u._at(p))*DLDY(k, p) +
+                                                fl.Flux_Z(u._at(p))*DLDZ(k, p); );
                 }
 
             auto Vol  () { return Integrate<FluxType::volume>(); }
